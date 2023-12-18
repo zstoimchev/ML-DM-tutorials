@@ -47,7 +47,7 @@ export function generatePoints(count: number): Point[] {
     const y = Math.random();
     let label = 1;
     if (x > y) {
-      label = -1;
+      label = 0;
     }
     points.push(new Point(x, y, label));
   }

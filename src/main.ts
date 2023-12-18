@@ -11,35 +11,54 @@ async function main() {
 
 
   const model = new ArtificialNeuralNetwork(2, 0.03, [
-    new Layer(10, ActivationFunction.sigmoid),
-    new Layer(5, ActivationFunction.sigmoid),
-    new Layer(15, ActivationFunction.sigmoid),
-    new Layer(3, ActivationFunction.sigmoid),
-
+    new Layer(50, ActivationFunction.sigmoid),
+    new Layer(50, ActivationFunction.sigmoid),
+    // new Layer(3, ActivationFunction.sigmoid),
+    new Layer(2, ActivationFunction.sigmoid),
   ]);
 
-  const inputVector = [points[0].x, points[0].y];
-  console.log(model.predOne(inputVector));
+  const epochs = 10;
+  for (let i = 0; i < epochs; i++) {
+    console.log("Epoch: ", i);
+    for (let i = 0; i < points.length; i++) {
+      const inputVector = [points[i].x, points[i].y];
+      // this is one hot encoding haha
+      const targets = [0, 0];
+      targets[points[i].label] = 1;
 
+      model.fitOne(inputVector, targets);
 
-  /*
-  const model = new Neuron(2);
-  for (const pt of points) {
-    const inputVector = [pt.x, pt.y];
-    model.fitOne(inputVector, pt.label);
-    predAll(model, points);
-    await sleep(100);
+      if (i % 25 == 0) {
+        predAll(model, points);
+      }
+      await sleep(1);
+    }
   }
-*/
+
+
+
 
 }
 
-function predAll(model: Neuron, data: Point[]) {
+function predAll(model: ArtificialNeuralNetwork, data: Point[]) {
   for (const pt of data) {
     const inputVector = [pt.x, pt.y];
-    const prediction = model.predOne(inputVector);
-    pt.guessed = prediction == pt.label;
+    const prediction = model.predOne(inputVector);  // [0.1, 0.8]
+
+    const actualPrediction = argMax(prediction);
+
+    pt.guessed = (actualPrediction == pt.label);
   }
+}
+
+function argMax(elts: number[]): number {
+  let maxIndex = 0;
+  for (let i = 0; i < elts.length; i++) {
+    if (elts[i] > elts[maxIndex]) {
+      maxIndex = i;
+    }
+  }
+  return maxIndex;
 }
 
 
