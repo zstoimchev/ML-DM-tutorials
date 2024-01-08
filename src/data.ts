@@ -54,3 +54,24 @@ export function generatePoints(count: number): Point[] {
 
   return points;
 }
+
+export function generateCircularPoints(count: number): Point[] {
+  const points: Point[] = [];
+
+  for (let i = 0; i < count; i++) {
+    const x = Math.random();
+    const y = Math.random();
+
+    const moveX = x - 0.5;
+    const moveY = y - 0.5;
+
+    const dist = Math.sqrt(moveX * moveX + moveY * moveY);
+
+    let label = 0;
+    if (dist < 0.4) {
+      label = 1;
+    }
+    points.push(new Point(x, y, label))
+  }
+  return points;
+}

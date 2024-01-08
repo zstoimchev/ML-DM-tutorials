@@ -5,6 +5,10 @@ export class ActivationFunction {
         // 1 - (1 * Math.exp(-x))
         return mapByElt(m, el => 1 / (1 + Math.exp(-el)));
     }
+
+    static relu = (m: Matrix): Matrix => {
+        return mapByElt(m, el => Math.max(0, el));
+    }
 }
 
 export class DerivativeFunction {
@@ -14,12 +18,18 @@ export class DerivativeFunction {
         const oneMinusSig = subtractMatrices(one, sig);
         return multiplyByElement(sig, oneMinusSig);
     }
+
+    static relu = (m: Matrix): Matrix => {
+        const r = ActivationFunction.relu(m);
+        return mapByElt(r, el => el > 0 ? 1 : 0);
+    }
 }
 
-export function getDerivative(func: (x: Matrix) => Matrix): (x: Matrix) => Matrix{
-    if(func == ActivationFunction.sigmoid) return DerivativeFunction.sigmoid;
-    
-    throw new Error ("Canot find the derivative");
+export function getDerivative(func: (x: Matrix) => Matrix): (x: Matrix) => Matrix {
+    if (func == ActivationFunction.sigmoid) return DerivativeFunction.sigmoid;
+    if (func == ActivationFunction.relu) return DerivativeFunction.relu;
+
+    throw new Error("Canot find the derivative");
 
 
 }
